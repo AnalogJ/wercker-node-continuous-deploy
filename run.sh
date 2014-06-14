@@ -66,7 +66,7 @@ elif [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH" = "$WERCKER_GIT_BRANCH" ]
         echo "email = $WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_EMAIL" >> .npmrc
 
         echo "Publishing package"
-        npm publish
+        npm publish --verbose
     fi
 
 else
