@@ -12,6 +12,8 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
     #task1 run automated rdocs
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_RDOC" ]; then
         echo "Generating automated rdocs for commit"
+        npm config set prefix ~/.npm
+        export PATH=$HOME/.npm/bin:$PATH
         npm install -g smartcomments
         smartcomments -g
         git commit -am "automated rdocs"
