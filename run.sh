@@ -14,18 +14,25 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
 
     #task1 run automated rdocs
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_RDOC" ]; then
-        echo "Generating automated rdocs for commit"
+        echo "[ Generating automated rdocs for commit ]"
         npm config set prefix ~/.npm
         export PATH=$HOME/.npm/bin:$PATH
         npm install -g smartcomments
         smartcomments -g
-        git commit -am "automated rdocs"
+        echo " - checking if any changes occured by smartcomments using git diff"
+        set +e
+        output=$(git diff --exit-code);
+        if [ $? -ne 0 ]; then
+            echo " - found changes, commiting"
+            git commit -am "automated rdocs"
+        fi
+        set -e
     fi
 
     #task2 bump version
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_VERSION_BUMP" ]; then
 
-        echo "Automatically bumping version"
+        echo "[ Automatically bumping version ]"
         LATEST_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
         echo " - latest tag: $LATEST_TAG"
         echo " - checking the diff between the latest tag and the current version."
@@ -44,14 +51,14 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
 
     #task3 push to github
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_PUSH" ] && [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN" ]; then
-        echo "Pushing changes to github"
+        echo "[ Pushing changes to github ]"
         REMOTE="https://$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN@github.com/$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY.git"
         echo " - pushing to authorized github remote"
         git push $REMOTE HEAD:$WERCKER_GIT_BRANCH --tags
     fi
     #task4 create pull request
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_PR" ] && [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN" ]; then
-        echo "Creating pull request from $WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH -> $WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH for $WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY"
+        echo "[ Creating pull request from $WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH -> $WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH for $WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY ]"
         curl --user "$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN:x-oauth-basic" \
            --request POST \
            --data '{"head": "'"$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH"'", "base": "'"$WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH"'","title":"automated pull request from '"$WERCKER_GIT_BRANCH"' branch."}' \
@@ -61,11 +68,11 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
 
 
 elif [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH" = "$WERCKER_GIT_BRANCH" ]; then
-    echo "Starting deploy branch tasks for $WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH"
+    echo "[ Starting deploy branch tasks for $WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH ]"
 
     #task1 npm publish
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_PUBLISH" ]; then
-        echo "Generating .npmrc file"
+        echo "[ Generating .npmrc file ]"
         touch .npmrc
         echo "_auth = $WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_AUTH" >> .npmrc
         echo "email = $WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_EMAIL" >> .npmrc
