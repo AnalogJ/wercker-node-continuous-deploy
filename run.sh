@@ -40,7 +40,7 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
         output=$(git diff $LATEST_TAG HEAD --exit-code);
         if [ $? -ne 0 ]; then
             echo " - A difference exists between the current branch $WERCKER_GIT_BRANCH and tag $LATEST_TAG"
-            echo " - bumping version. Incrementing $$WERCKER_NODE_CONTINUOUS_DEPLOY_VERSION_BUMP"
+            echo " - bumping version. Incrementing $WERCKER_NODE_CONTINUOUS_DEPLOY_VERSION_BUMP"
             #bump the version
             npm version $WERCKER_NODE_CONTINUOUS_DEPLOY_VERSION_BUMP -m "automated version bump"
         else
