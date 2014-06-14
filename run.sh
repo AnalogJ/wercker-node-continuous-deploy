@@ -74,7 +74,8 @@ elif [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH" = "$WERCKER_GIT_BRANCH" ]
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_PUBLISH" ]; then
         echo "[ Generating .npmrc file ]"
         touch .npmrc
-        echo "_auth = $WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_AUTH\nemail = $WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_EMAIL" >> .npmrc
+        echo "_auth = $WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_AUTH" >> .npmrc
+        echo "email = $WERCKER_NODE_CONTINUOUS_DEPLOY_NPM_EMAIL" >> .npmrc
         echo "Publishing package"
         cat .npmrc
         npm publish --verbose
