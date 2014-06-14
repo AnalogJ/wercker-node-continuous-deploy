@@ -6,6 +6,9 @@ echo "Configuring git"
 git config --global user.email "pleasemailus@wercker.com"
 git config --global user.name "wercker"
 
+#task0 clean the working directory from the test builds (node_modules, etc are removed)
+git clean -d -x -f
+
 if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; then
     echo "Starting dev branch tasks for $WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH"
 
