@@ -1,8 +1,6 @@
 ########################################################################################################################
 # Environment
 ########################################################################################################################
-WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH
-WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH
 
 echo "Configuring git"
 git config --global user.email "pleasemailus@wercker.com"
@@ -32,7 +30,7 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
             echo " - A difference exists between the current branch $WERCKER_GIT_BRANCH and tag $LATEST_TAG"
             echo " - bumping version. Incrementing $$WERCKER_NODE_CONTINUOUS_DEPLOY_VERSION_BUMP"
             #bump the version
-            npm version $$WERCKER_NODE_CONTINUOUS_DEPLOY_VERSION_BUMP -m "automated version bump"
+            npm version $WERCKER_NODE_CONTINUOUS_DEPLOY_VERSION_BUMP -m "automated version bump"
         else
             echo "skipping, no commits since latest tag."
         fi
@@ -42,7 +40,7 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
     #task3 push to github
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_PUSH" ] && [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN" ]; then
         echo "Pushing changes to github"
-        REMOTE="https://$WERCKER_GIT_PUSH_GITHUB_ACCESS_TOKEN@github.com/$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY.git"
+        REMOTE="https://$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN@github.com/$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY.git"
         echo " - pushing to remote [ $REMOTE ]"
         git push $REMOTE HEAD:$WERCKER_GIT_BRANCH --tags
     fi
