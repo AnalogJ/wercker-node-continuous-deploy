@@ -41,7 +41,7 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
     if [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_PUSH" ] && [ -n "$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN" ]; then
         echo "Pushing changes to github"
         REMOTE="https://$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN@github.com/$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY.git"
-        echo " - pushing to remote [ $REMOTE ]"
+        echo " - pushing to authorized github remote"
         git push $REMOTE HEAD:$WERCKER_GIT_BRANCH --tags
     fi
     #task4 create pull request
@@ -49,7 +49,7 @@ if [ "$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH" = "$WERCKER_GIT_BRANCH" ]; the
         echo "Creating pull request from $WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH -> $WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH for $WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY"
         curl --user "$WERCKER_NODE_CONTINUOUS_DEPLOY_GITHUB_ACCESS_TOKEN:x-oauth-basic" \
            --request POST \
-           --data '{"head": "'"$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH"'", "base": "'"$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH"'","title":"automated pull request from '"$WERCKER_GIT_BRANCH"' branch."}' \
+           --data '{"head": "'"$WERCKER_NODE_CONTINUOUS_DEPLOY_DEV_BRANCH"'", "base": "'"$WERCKER_NODE_CONTINUOUS_DEPLOY_DEPLOY_BRANCH"'","title":"automated pull request from '"$WERCKER_GIT_BRANCH"' branch."}' \
            https://api.github.com/repos/$WERCKER_GIT_OWNER/$WERCKER_GIT_REPOSITORY/pulls
     fi
 
